@@ -1,2 +1,5 @@
 .venv/
 testing/
+
+TODO
+src/__pycache__/
