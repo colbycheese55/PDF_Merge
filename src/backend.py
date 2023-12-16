@@ -5,10 +5,10 @@ import datetime
 
 
 
-def executeInstruction(char: str, fileMap: dict[str, str], mergePDF: pdf.PdfMerger, start=1, end=None) -> str | bool: #TODO rework error messages
+def executeInstruction(char: str, fileMap: dict[str, pdf.PdfReader], mergePDF: pdf.PdfMerger, start=1, end=None) -> str | bool: #TODO rework error messages
     if char not in fileMap:
         return f"\"{char}\" was not assigned to a file"
-    addPDF = pdf.PdfReader(fileMap[char])
+    addPDF = fileMap[char]
     if end is None:
         end = len(addPDF.pages)
     if start <= 0 or end <= 0 or start > end:
@@ -19,6 +19,8 @@ def executeInstruction(char: str, fileMap: dict[str, str], mergePDF: pdf.PdfMerg
     return True
 
 def saveMergedPDF(savepath: str, mergePDF: pdf.PdfMerger) -> None:
+    if savepath is not None and not savepath.endswith(".pdf"):
+        savepath += ".pdf"
     if savepath is None:
         desktop_path = os.path.expanduser("~") + "\\Desktop"
         timestamp = datetime.datetime.now().strftime("%S%M%H")
@@ -26,7 +28,7 @@ def saveMergedPDF(savepath: str, mergePDF: pdf.PdfMerger) -> None:
     with open(savepath, "wb") as out:
         mergePDF.write(out)
 
-def processInstructions(instructions: str, fileMap: dict[str, str], savepath: str) -> str:
+def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], savepath: str) -> str:
     instructions = instructions.lower().replace(" ", "")
     instructions = instructions.split(",")
     mergePDF = pdf.PdfMerger()
@@ -68,10 +70,19 @@ def processInstructions(instructions: str, fileMap: dict[str, str], savepath: st
     saveMergedPDF(savepath, mergePDF)
     return None
 
+def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> str:
+    text = ""
+    for i in range(len(newFiles)):
+        char = chr(ord('a') + i)
+        filename = os.path.basename(newFiles[i])
+        reader = pdf.PdfReader(newFiles[i])
+        fileMap[char] = reader
+        text += f"{char}:     {filename}\n"
+    return text
 
 
-if __name__=="__main__":
-    filemap = {'a': "testing\\1.2 Boolean Algebra.pdf", 'b': "testing\\1.3 Binary Arithmetic P1.pdf", 'c': "testing\\1.4 Binary Arithmetic P2.pdf"}
-    savepath = "testing\\merge.pdf"
-    instructions = "a20"
-    print(processInstructions(instructions, filemap, savepath))
+# if __name__=="__main__":
+#     filemap = {'a': "testing\\1.2 Boolean Algebra.pdf", 'b': "testing\\1.3 Binary Arithmetic P1.pdf", 'c': "testing\\1.4 Binary Arithmetic P2.pdf"}
+#     savepath = "testing\\merge.pdf"
+#     instructions = "a20"
+#     print(processInstructions(instructions, filemap, savepath))
