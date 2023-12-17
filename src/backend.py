@@ -32,41 +32,28 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
     instructions = instructions.split(",")
     mergePDF = pdf.PdfMerger()
 
-    for instruction in instructions: #TODO clean
+    validFormats = dict()
+    commonArgs = (fileMap, mergePDF)
+    validFormats[r"^[a-z]$"] = lambda match, args: executeInstruction(match.group(0), *args) #[file]
+    validFormats[r"^([a-z])(\d+)$"] = lambda match, args: executeInstruction(match.group(1), *args, start=int(match.group(2)), end=int(match.group(2))) #[file][page]
+    validFormats[r"^([a-z])(\d+)-(\d+)$"] = lambda match, args: executeInstruction(match.group(1), *args, start=int(match.group(2)), end=int(match.group(3))) #[file][start]-[end]
+    validFormats[r"^([a-z])(\d+)-$"] = lambda match, args: executeInstruction(match.group(1), *args, start=int(match.group(2))) #[file][start]-
+
+    for instruction in instructions:
         result = False
         if instruction == "":
             continue
-        if result == False:
-            match = regex.match(r"^[a-z]$", instruction)
+        for format, func in validFormats.items():
+            match = regex.match(format, instruction)
             if match is not None:
-                char = match.group(0)
-                result = executeInstruction(char, fileMap, mergePDF)
-        if result == False:
-            match = regex.match(r"^([a-z])(\d+)$", instruction)
-            if match is not None:
-                char = match.group(1)
-                page = int(match.group(2))
-                result = executeInstruction(char, fileMap, mergePDF, start=page, end=page)
-        if result == False:
-            match = regex.match(r"^([a-z])(\d+)-(\d+)$", instruction)
-            if match is not None:
-                char = match.group(1)
-                start = int(match.group(2))
-                end = int(match.group(3))
-                result = executeInstruction(char, fileMap, mergePDF, start=start, end=end)
-        if result == False:
-            match = regex.match(r"^([a-z])(\d+)-$", instruction)
-            if match is not None:
-                char = match.group(1)
-                start = int(match.group(2))
-                result = executeInstruction(char, fileMap, mergePDF, start=start)
-        
+                result = func(match, commonArgs)
+                break
         if result == False:
             return f"Instruction \"{instruction}\" is an unrecognizd pattern"
         if result != True:
             return f"Instruction \"{instruction}\": {result}"
 
-    if len(mergePDF.pages) ==0:
+    if len(mergePDF.pages) == 0:
         return "No instructions given; PDF would have been empty"    
     saveMergedPDF(savepath, mergePDF)
     return None
