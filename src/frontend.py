@@ -17,10 +17,9 @@ def addNewFiles() -> None:
     paths = fd.askopenfilenames(title="Select File(s)", 
                                 filetypes=[("PDF Files", "*.pdf"), ("All Files", "*.*")], 
                                 initialdir="~")
-    text, success = backend.registerNewFiles(paths, fileMap)
-    if success == False:
-        errorPopup(text)
-        return
+    text, error = backend.registerNewFiles(paths, fileMap)
+    if error != False:
+        errorPopup(error)
     fileDisplayBox.configure(state=ctk.NORMAL)
     fileDisplayBox.insert(ctk.END, text)
     fileDisplayBox.configure(state=ctk.DISABLED)

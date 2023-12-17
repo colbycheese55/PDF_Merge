@@ -4,7 +4,6 @@ import os
 import datetime
 
 
-
 def executeInstruction(char: str, fileMap: dict[str, pdf.PdfReader], mergePDF: pdf.PdfMerger, start=1, end=None) -> str | bool: #TODO rework error messages
     if char not in fileMap:
         return f"\"{char}\" was not assigned to a file"
@@ -72,7 +71,7 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
     saveMergedPDF(savepath, mergePDF)
     return None
 
-def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> (str, bool):
+def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> (str, bool | str):
     text = ""
     for i in range(len(newFiles)):
         char = chr(ord('a') + len(fileMap))
@@ -80,10 +79,10 @@ def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) ->
         try:
             reader = pdf.PdfReader(newFiles[i])
         except Exception as e:
-            return f"\"{newFiles[i]}\" could not be read as a PDF", False
+            return text, f"\"{newFiles[i]}\" could not be read as a PDF"
         fileMap[char] = reader
         text += f"{char}:\t{filename}\n"
-    return text, True
+    return text, False
 
 
 # if __name__=="__main__":
