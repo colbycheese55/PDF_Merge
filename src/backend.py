@@ -9,9 +9,9 @@ def executeInstruction(char: str, fileMap: dict[str, pdf.PdfReader], mergePDF: p
     if char not in fileMap:
         return f"\"{char}\" was not assigned to a file"
     length = len(fileMap[char].pages)
-    if start <= 0 or end <=0 or (end is not None and start > end):
+    if start <= 0 or (end is not None and end <=0) or (end is not None and start > end):
         return f"Invalid page(s)"
-    if start > length or end > length:
+    if start > length or (end is not None and end > length):
         return f"Out of range, this PDF has {length} pages"
     if end is None:
         end = length
@@ -73,7 +73,7 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
 def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> (str, bool):
     text = ""
     for i in range(len(newFiles)):
-        char = chr(ord('a') + i)
+        char = chr(ord('a') + len(fileMap))
         filename = os.path.basename(newFiles[i])
         try:
             reader = pdf.PdfReader(newFiles[i])
