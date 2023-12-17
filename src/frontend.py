@@ -7,6 +7,7 @@ import backend
 root = tki.Tk()
 root.geometry("1010x500")
 root.title("PDF Merge")
+root.bind("<Control-w>", lambda _: root.destroy())
 padding = 10
 fileMap = dict()
 
