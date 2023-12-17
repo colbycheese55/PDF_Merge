@@ -29,7 +29,7 @@ def saveMergedPDF(savepath: str, mergePDF: pdf.PdfMerger) -> None:
         mergePDF.write(out)
 
 def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], savepath: str) -> str:
-    instructions = instructions.lower().replace(" ", "")
+    instructions = instructions.lower().replace(" ", "").replace("\n", "")
     instructions = instructions.split(",")
     mergePDF = pdf.PdfMerger()
 
