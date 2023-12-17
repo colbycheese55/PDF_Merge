@@ -80,7 +80,7 @@ def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) ->
         except Exception as e:
             return f"\"{newFiles[i]}\" could not be read as a PDF", False
         fileMap[char] = reader
-        text += f"{char}:     {filename}\n"
+        text += f"{char}:\t{filename}\n"
     return text, True
 
 
