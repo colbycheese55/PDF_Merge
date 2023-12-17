@@ -8,14 +8,14 @@ import datetime
 def executeInstruction(char: str, fileMap: dict[str, pdf.PdfReader], mergePDF: pdf.PdfMerger, start=1, end=None) -> str | bool: #TODO rework error messages
     if char not in fileMap:
         return f"\"{char}\" was not assigned to a file"
-    addPDF = fileMap[char]
+    length = len(fileMap[char].pages)
+    if start <= 0 or end <=0 or (end is not None and start > end):
+        return f"Invalid page(s)"
+    if start > length or end > length:
+        return f"Out of range, this PDF has {length} pages"
     if end is None:
-        end = len(addPDF.pages)
-    if start <= 0 or end <= 0 or start > end:
-        return f"Invalid page number(s)"
-    if end > len(addPDF.pages):
-        return f"Page {start} is out of range of the input PDF"
-    mergePDF.append(addPDF, None, (start-1, end))
+        end = length
+    mergePDF.append(fileMap[char], None, (start-1, end))
     return True
 
 def saveMergedPDF(savepath: str, mergePDF: pdf.PdfMerger) -> None:
@@ -70,15 +70,18 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
     saveMergedPDF(savepath, mergePDF)
     return None
 
-def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> str:
+def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> (str, bool):
     text = ""
     for i in range(len(newFiles)):
         char = chr(ord('a') + i)
         filename = os.path.basename(newFiles[i])
-        reader = pdf.PdfReader(newFiles[i])
+        try:
+            reader = pdf.PdfReader(newFiles[i])
+        except Exception as e:
+            return f"\"{newFiles[i]}\" could not be read as a PDF", False
         fileMap[char] = reader
         text += f"{char}:     {filename}\n"
-    return text
+    return text, True
 
 
 # if __name__=="__main__":

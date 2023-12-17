@@ -1,5 +1,6 @@
 import tkinter as tki
 from tkinter import filedialog as fd
+from tkinter import messagebox as mb
 import backend
 
 
@@ -14,7 +15,10 @@ def addNewFiles() -> None:
     paths = fd.askopenfilenames(title="Select File(s)", 
                                 filetypes=[("PDF Files", "*.pdf"), ("All Files", "*.*")], 
                                 initialdir="~")
-    text = backend.registerNewFiles(paths, fileMap)
+    text, success = backend.registerNewFiles(paths, fileMap)
+    if success == False:
+        errorPopup(text)
+        return
     fileDisplayBox.config(state=tki.NORMAL)
     fileDisplayBox.insert(tki.END, text)
     fileDisplayBox.config(state=tki.DISABLED)
@@ -35,7 +39,11 @@ def save(getPath: bool) -> None:
                                     confirmoverwrite=True)
     instructions = instructionBox.get("1.0", tki.END)
     result = backend.processInstructions(instructions, fileMap, path)
+    if result is not None:
+        errorPopup(result)
 
+def errorPopup(message: str) -> None:
+    mb.showerror("PDF Merge Error", message)
 
 #BUTTONS
 addFilesBtn = tki.Button(root, text="Add PDF(s)", width=40, height=2, command=addNewFiles)
