@@ -74,6 +74,8 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
 def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) -> (str, bool | str):
     text = ""
     for i in range(len(newFiles)):
+        if len(fileMap) == 26:
+            return text, "Only 26 PDFs can be loaded at once"
         char = chr(ord('a') + len(fileMap))
         filename = os.path.basename(newFiles[i])
         try:
