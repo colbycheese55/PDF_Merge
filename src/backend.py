@@ -66,7 +66,9 @@ def processInstructions(instructions: str, fileMap: dict[str, pdf.PdfReader], sa
             return f"Instruction \"{instruction}\" is an unrecognizd pattern"
         if result != True:
             return f"Instruction \"{instruction}\": {result}"
-        
+
+    if len(mergePDF.pages) ==0:
+        return "No instructions given; PDF would have been empty"    
     saveMergedPDF(savepath, mergePDF)
     return None
 
