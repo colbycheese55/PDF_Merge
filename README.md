@@ -6,6 +6,7 @@ This program allows numerous PDFs to be merged and rearranged in a very customiz
 ## Installation
 
 Option 1: Install the `.exe` file
+
 Option 2: Clone this repo, create a python virtual environment, install `requirements.txt`, run `frontend.py`
 
 ## How to use
