@@ -1,5 +1,6 @@
 .venv/
 testing/
-
+dist/
+build/
 TODO
 src/__pycache__/
