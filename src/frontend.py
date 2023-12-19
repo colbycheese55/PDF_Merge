@@ -39,9 +39,12 @@ def save(getPath: bool) -> None:
                                     initialdir="~",
                                     confirmoverwrite=True)
     instructions = instructionBox.get("1.0", ctk.END)
-    result = backend.processInstructions(instructions, fileMap, path)
-    if result is not None:
-        errorPopup(result)
+    try:
+        result = backend.processInstructions(instructions, fileMap, path)
+        if result is not None:
+            errorPopup(result)
+    except Exception as e:
+        errorPopup("An unknown error has occured")
 
 def errorPopup(message: str) -> None:
     mb.showerror("PDF Merge Error", message)
