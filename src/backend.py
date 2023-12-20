@@ -73,9 +73,3 @@ def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, pdf.PdfReader]) ->
         text += f"{char}:\t{filename}\n"
     return text, False
 
-
-# if __name__=="__main__":
-#     filemap = {'a': "testing\\1.2 Boolean Algebra.pdf", 'b': "testing\\1.3 Binary Arithmetic P1.pdf", 'c': "testing\\1.4 Binary Arithmetic P2.pdf"}
-#     savepath = "testing\\merge.pdf"
-#     instructions = "a20"
-#     print(processInstructions(instructions, filemap, savepath))
