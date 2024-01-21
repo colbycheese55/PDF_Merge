@@ -2,6 +2,7 @@ import fitz
 import re as regex
 import os
 import datetime
+import subprocess
 
 
 def executeInstruction(char: str, fileMap: dict[str, "PDF"], mergePDF: "PDF", start=1, end=None) -> str | bool:
@@ -17,7 +18,7 @@ def executeInstruction(char: str, fileMap: dict[str, "PDF"], mergePDF: "PDF", st
     mergePDF.appendPages(fileMap[char], start, end)
     return True
 
-def saveMergedPDF(savepath: str, mergePDF: "PDF") -> None:
+def saveMergedPDF(savepath: str, mergePDF: "PDF", openAfter: bool) -> None:
     if savepath is not None and not savepath.endswith(".pdf"):
         savepath += ".pdf"
     if savepath is None:
@@ -25,8 +26,10 @@ def saveMergedPDF(savepath: str, mergePDF: "PDF") -> None:
         timestamp = datetime.datetime.now().strftime("%S%M%H")
         savepath = f"{desktop_path}\\merged_{timestamp}.pdf"
     mergePDF.writeFile(savepath)
+    if openAfter:
+        subprocess.Popen(["cmd", "/c", "start", "", savepath], shell=True)
 
-def processInstructions(instructions: str, fileMap: dict[str, "PDF"], savepath: str) -> str:
+def processInstructions(instructions: str, fileMap: dict[str, "PDF"], savepath: str, openAfter: bool) -> str:
     instructions = instructions.lower().replace(" ", "").replace("\n", "")
     instructions = instructions.split(",")
     mergePDF = PDF()
@@ -54,7 +57,7 @@ def processInstructions(instructions: str, fileMap: dict[str, "PDF"], savepath: 
 
     if len(mergePDF) == 0:
         return "No instructions given; PDF would have been empty"    
-    saveMergedPDF(savepath, mergePDF)
+    saveMergedPDF(savepath, mergePDF, openAfter)
     return None
 
 def registerNewFiles(newFiles: tuple[str], fileMap: dict[str, "PDF"]) -> (str, bool | str):

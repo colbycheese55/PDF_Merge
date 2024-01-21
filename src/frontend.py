@@ -5,7 +5,7 @@ import backend
 
 
 root = ctk.CTk()
-root.geometry("840x340")
+root.geometry("840x350")
 root.resizable(width=False, height=False)
 root.title("PDF Merge")
 root.bind("<Control-w>", lambda _: root.destroy())
@@ -33,14 +33,15 @@ def clear() -> None:
 
 def save(getPath: bool) -> None:
     path = None
+    instructions = instructionBox.get("1.0", ctk.END)
+    openAfter = openAfterBtn.get() == 1
     if getPath:
         path = fd.asksaveasfilename(title="Select File(s)", 
                                     filetypes=[("PDF Files", "*.pdf")], 
                                     initialdir="~",
                                     confirmoverwrite=True)
-    instructions = instructionBox.get("1.0", ctk.END)
     try:
-        result = backend.processInstructions(instructions, fileMap, path)
+        result = backend.processInstructions(instructions, fileMap, path, openAfter)
         if result is not None:
             errorPopup(result)
     except Exception as e:
@@ -64,11 +65,15 @@ saveBtn.grid(row=7, rowspan=1, column=6, columnspan=1, padx=padding, pady=paddin
 saveAsBtn = ctk.CTkButton(root, text="Save as", **btnParams, command=lambda: save(True))
 saveAsBtn.grid(row=7, rowspan=1, column=8, columnspan=1, padx=padding, pady=padding)
 
+openAfterBtn = ctk.CTkCheckBox(root, text="Open After Save", **btnParams)
+openAfterBtn.grid(row=6, rowspan=1, column=6, columnspan=3, padx=padding, pady=padding)
+openAfterBtn.select()
+
 #TEXT BOXES
 textFont = ("Calibri", 15)
 
-instructionBox = ctk.CTkTextbox(root, wrap=ctk.WORD, width=400, height=200, font=textFont)
-instructionBox.grid(row=3, rowspan=4, column=5, columnspan=5, padx=padding, pady=0)
+instructionBox = ctk.CTkTextbox(root, wrap=ctk.WORD, width=400, height=170, font=textFont)
+instructionBox.grid(row=3, rowspan=3, column=5, columnspan=5, padx=padding, pady=0)
 
 fileDisplayBox = ctk.CTkTextbox(root, wrap=ctk.WORD, width=400, height=250, font=textFont)
 fileDisplayBox.configure(state=ctk.DISABLED)
