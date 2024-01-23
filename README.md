@@ -18,7 +18,12 @@ After running the program, use the `Add PDF(s)` button to select PDF(s) to be lo
 - Page Range `[doc letter][first page]-[last page]` (ex. `a4-8`)
 - All pages thereafter `[doc letter][first page]-` (ex. `a5-`)
 
+**Keybinds:**
+- _Control-W_ will close the program
+- _Control-Enter_ will _Save as_
+- _Control-Shift-Enter_ will _Save_
+- _Control-O_ will toggle the _Open After Save_ checkbox
+
 **Other Notes:**
 - `Save` will save the merged PDF to the user desktop with the name `merged_[timestamp].pdf`
 - Up to 26 PDFs can be loaded at once
-- Control-W will close the program

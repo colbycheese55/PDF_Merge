@@ -8,7 +8,6 @@ root = ctk.CTk()
 root.geometry("840x350")
 root.resizable(width=False, height=False)
 root.title("PDF Merge")
-root.bind("<Control-w>", lambda _: root.destroy())
 padding = 10
 fileMap = dict()
 
@@ -40,6 +39,8 @@ def save(getPath: bool) -> None:
                                     filetypes=[("PDF Files", "*.pdf")], 
                                     initialdir="~",
                                     confirmoverwrite=True)
+    if path == "":
+        return
     try:
         result = backend.processInstructions(instructions, fileMap, path, openAfter)
         if result is not None:
@@ -88,6 +89,11 @@ fileDisplayLabel.grid(row=2, rowspan=1, column=0, columnspan=5)
 instructionsLabel = ctk.CTkLabel(root, text="Instructions", font=labelFont)
 instructionsLabel.grid(row=2, rowspan=1, column=5, columnspan=5)
 
+#KEYBINDS
+root.bind("<Control-w>", lambda _: root.destroy())
+root.bind("<Control-o>", lambda _: openAfterBtn.toggle())
+root.bind("<Control-Return>", lambda _: save(True))
+root.bind("<Control-Shift-Return>", lambda _: save(False))
 
 
 root.mainloop()
