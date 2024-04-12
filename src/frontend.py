@@ -15,7 +15,7 @@ fileMap = dict()
 def addNewFiles() -> None:
     paths = fd.askopenfilenames(title="Select File(s)", 
                                 filetypes=[("PDF Files", "*.pdf"), ("All Files", "*.*")], 
-                                initialdir="~")
+                                initialdir="~\\Desktop")
     text, error = backend.registerNewFiles(paths, fileMap)
     if error != False:
         errorPopup(error)
@@ -37,7 +37,7 @@ def save(getPath: bool) -> None:
     if getPath:
         path = fd.asksaveasfilename(title="Select File(s)", 
                                     filetypes=[("PDF Files", "*.pdf")], 
-                                    initialdir="~",
+                                    initialdir="~\\Desktop",
                                     confirmoverwrite=True)
     if path == "":
         return
