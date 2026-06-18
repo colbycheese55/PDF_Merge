@@ -26,4 +26,4 @@ After running the program, use the `Add PDF(s)` button to select PDF(s) to be lo
 
 **Other Notes:**
 - `Save` will save the merged PDF to the user desktop with the name `merged_[timestamp].pdf`
-- Up to 26 PDFs can be loaded at once
+- Up to 26 PDFs can be loaded at once 
